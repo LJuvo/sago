@@ -17,7 +17,7 @@ let objectProject = {
   },
   ui: {
     entry: "src/views/ui/main.js",
-    template: "src/public/ui.html",
+    template: "src/public/index.html",
     filename: "ui.html",
     title: "Index Page",
     chunks: ["chunk-vendors", "chunk-common", "ui"]
