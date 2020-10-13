@@ -1,26 +1,11 @@
+const path = require('path');
+
 let objectProject = {
-  site: {
-    entry: "src/views/site/main.js", // page 的入口
+  index: {
+    entry: "src/views/main.js", // page 的入口
     template: "src/public/index.html", // 模板来源
     filename: "index.html", // 在 dist/index.html 的输出
-    // 当使用 title 选项时，template 中的 title 标签需要是 <title><%= htmlWebpackPlugin.options.title %></title>
-    title: "Index Page",
-    // 在这个页面中包含的块，默认情况下会包含,提取出来的通用 chunk 和 vendor chunk。
-    chunks: ["chunk-vendors", "chunk-common", "site"]
-  },
-  index: {
-    entry: "src/views/index/main.js",
-    template: "src/public/index.html",
-    filename: "home.html",
-    title: "Index Page",
     chunks: ["chunk-vendors", "chunk-common", "index"]
-  },
-  ui: {
-    entry: "src/views/ui/main.js",
-    template: "src/public/index.html",
-    filename: "ui.html",
-    title: "Index Page",
-    chunks: ["chunk-vendors", "chunk-common", "ui"]
   }
 };
 let page = {};
@@ -44,5 +29,13 @@ module.exports = {
     port: 8080, // 端口号，默认8080
     https: false, // 协议
     hotOnly: false // 没啥效果，热模块，webpack已经做好了
-  }
+  },
+  pluginOptions: {
+    'style-resources-loader': {
+      preProcessor: 'less',
+      patterns: [
+        path.resolve(__dirname, './src/less/variables.less') // 变量文件位置
+      ]
+      }
+    },
 };
