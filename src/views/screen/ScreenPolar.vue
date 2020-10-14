@@ -1,109 +1,44 @@
 <template>
-    <div class="screen-polar" id="polar">
+  <div class="polar">
+    <img class="polar-img" src="../images/target.png" />
+    <div class="polar-cell">
+      <div class="polar-cell-comps">
+        <DataPolar></DataPolar>
+      </div>
+      <div class="polar-cell-list">
+        <DataTarget></DataTarget>
+      </div>
     </div>
+  </div>
 </template>
 <script>
-import DataSet from '@antv/data-set';
-import { Chart } from '@antv/g2';
+import DataPolar from "./DataPolar";
+import DataTarget from "./DataTarget";
 export default {
-    mounted(){
-        const data = [
-  { item: 'Design', a: 70, b: 30 },
-  { item: 'Development', a: 60, b: 70 },
-  { item: 'Marketing', a: 50, b: 60 },
-  { item: 'Users', a: 40, b: 50 },
-  { item: 'Test', a: 60, b: 70 },
-  { item: 'Language', a: 70, b: 50 },
-  { item: 'Technology', a: 50, b: 40 },
-  { item: 'Support', a: 30, b: 40 },
-  { item: 'Sales', a: 60, b: 40 },
-  { item: 'UX', a: 50, b: 60 },
-];
-const { DataView } = DataSet;
-const dv = new DataView().source(data);
-dv.transform({
-  type: 'fold',
-  fields: ['a', 'b'], // 展开字段集
-  key: 'user', // key字段
-  value: 'score', // value字段
-});
-
-const chart = new Chart({
-  container: 'polar',
-  autoFit: true,
-  height: 300,
-});
-chart.data(dv.rows);
-chart.scale('score', {
-  min: 0,
-  max: 80,
-});
-chart.coordinate('polar', {
-  radius: 0.8,
-});
-chart.tooltip({
-  shared: true,
-  showCrosshairs: true,
-  crosshairs: {
-    line: {
-      style: {
-        lineDash: [4, 4],
-        stroke: '#333'
-      }
-    }
+  components: {
+    DataPolar,
+    DataTarget
   }
-});
-chart.axis('item', {
-  line: null,
-  tickLine: null,
-  grid: {
-    line: {
-      style: {
-        lineDash: null,
-      },
-    },
-  },
-});
-chart.axis('score', {
-  line: null,
-  tickLine: null,
-  grid: {
-    line: {
-      type: 'line',
-      style: {
-        lineDash: null,
-      },
-    },
-  },
-});
-
-chart
-  .line()
-  .position('item*score')
-  .color('user')
-  .size(2);
-chart
-  .point()
-  .position('item*score')
-  .color('user')
-  .shape('circle')
-  .size(4)
-  .style({
-    stroke: '#fff',
-    lineWidth: 1,
-    fillOpacity: 1,
-  });
-chart
-  .area()
-  .position('item*score')
-  .color('user');
-chart.render();
-    }
-}
+};
 </script>
 <style lang="less" scoped>
-.screen-polar {
-    width: 70%;
-    margin: 0 auto;
+.polar {
+  width: 100%;
+  position: relative;
+  &-img {
+    width: 100%;
+  }
+  &-cell {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    &-comps {
+      padding-top: 15px;
+    }
+  }
 }
 </style>

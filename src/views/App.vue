@@ -1,7 +1,5 @@
 <template>
-  <div class="screen-app">
-    <router-view />
-  </div>
+  <router-view />
 </template>
 
 <script>
