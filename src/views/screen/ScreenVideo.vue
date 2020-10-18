@@ -1,61 +1,83 @@
 <template>
-  <div class="video"> 
-    <div class="video-cell">
-      <a-carousel class="video-cell-carousel" :after-change="onChange" dotPosition="bottom" :dots="true">
-        <div class="video-cell-node">
-            <a-row :gutter="[16,16]">
-  <a-col :span="12"><VideoPane class="video-cell-node-movie"></VideoPane></a-col>
-  <a-col :span="12"><VideoPane class="video-cell-node-movie"></VideoPane></a-col>
-  <a-col :span="12"><VideoPane class="video-cell-node-movie"></VideoPane></a-col>
-  <a-col :span="12"><VideoPane class="video-cell-node-movie"></VideoPane></a-col>
-</a-row>
-        </div>
-        <div class="video-cell-carousel"><h3>2</h3></div>
-        <div class="video-cell-carousel"><h3>3</h3></div>
-        <div class="video-cell-carousel"><h3>4</h3></div>
-      </a-carousel>
+  <a-carousel
+    class="video-cell-carousel"
+    :after-change="onChange"
+    dotPosition="bottom"
+    :dots="true"
+  >
+    <div class="video-cell-node">
+      <a-row :gutter="[16, 16]">
+        <a-col :span="12">
+          <VideoPane class="video-cell-node-movie">
+            <img class="video-movie" src="../images/img/tiger.png" />
+            <div class="video-title">珍珠滩</div>
+          </VideoPane>
+        </a-col>
+        <a-col :span="12">
+          <VideoPane class="video-cell-node-movie">
+            <img class="video-movie" src="../images/img/sea.png" />
+            <div class="video-title">珍珠滩</div>
+          </VideoPane>
+        </a-col>
+        <a-col :span="12">
+          <VideoPane class="video-cell-node-movie">
+            <img class="video-movie" src="../images/img/scene.png" />
+            <div class="video-title">珍珠滩</div>
+          </VideoPane>
+        </a-col>
+        <a-col :span="12">
+          <VideoPane class="video-cell-node-movie">
+            <img class="video-movie" src="../images/img/dragion.png" />
+            <div class="video-title">珍珠滩</div>
+          </VideoPane>
+        </a-col>
+      </a-row>
     </div>
-    <img class="video-img" src="../images/video.png" />
-  </div>
+    <div class="video-cell-carousel"><h3>2</h3></div>
+    <div class="video-cell-carousel"><h3>3</h3></div>
+    <div class="video-cell-carousel"><h3>4</h3></div>
+  </a-carousel>
 </template>
 <script>
-import { Carousel } from 'ant-design-vue';
+import { Carousel } from "ant-design-vue";
 import VideoPane from "./VideoPane";
 export default {
-    components:{
-        Carousel,VideoPane
-    },
-    methods:{
-        onChange(){}
-    }
+  components: {
+    Carousel,
+    VideoPane
+  },
+  methods: {
+    onChange() {}
+  }
 };
 </script>
-<style >
+<style>
 .ant-carousel .slick-slide {
   text-align: center;
   height: 100%;
   overflow: hidden;
 }
-.ant-carousel .slick-dots li{
-    margin: 0 6px!important;
+.ant-carousel .slick-dots li {
+  margin: 0 6px !important;
 }
 .ant-carousel .slick-dots li button {
-    height: 8px!important;
-    width: 8px!important;
-    border-radius: 8px!important;
-    background: #00fcff!important;
-    cursor: hand!important;
+  height: 8px !important;
+  width: 8px !important;
+  border-radius: 8px !important;
+  background: #00fcff !important;
+  cursor: hand !important;
 }
 
 .ant-carousel .slick-dots li.slick-active button {
-    background: #00fcff!important;
-    opacity: 1;
+  background: #00fcff !important;
+  opacity: 1;
 }
 </style>
 <style lang="less" scoped>
 .video {
   width: 100%;
   position: relative;
+  max-height: 450px;
   &-img {
     width: 100%;
   }
@@ -64,23 +86,25 @@ export default {
     top: 0;
     left: 0;
     width: 100%;
-    height: calc(100% - 30px);
+    // height: calc(100% - 30px);
     padding-top: 40px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     z-index: 10;
     &-carousel {
-        height: 100%;
+      height: 100%;
+      padding: 0px 20px;
+      margin-top: -20px;
     }
     &-node {
-        height: 100%;
-        padding: 10px 20px;
-        &-movie {
-            width: 100%;
-            height: 130px;
-            border-radius: 10px;
-        }
+      height: 100%;
+      padding: 10px 20px;
+      &-movie {
+        width: 100%;
+        height: 130px;
+        border-radius: 10px;
+      }
     }
   }
 }

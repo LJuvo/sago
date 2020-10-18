@@ -1,7 +1,6 @@
 <template>
     <div class="video">
-        <img class="video-movie" src="../images/map.png"/>
-        <div class="video-title">珍珠滩</div>
+        <slot></slot>
     </div>
 </template>
 <script>

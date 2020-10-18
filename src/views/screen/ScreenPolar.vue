@@ -1,14 +1,6 @@
 <template>
   <div class="polar">
-    <img class="polar-img" src="../images/target.png" />
-    <div class="polar-cell">
-      <div class="polar-cell-comps">
-        <DataPolar></DataPolar>
-      </div>
-      <div class="polar-cell-list">
-        <DataTarget></DataTarget>
-      </div>
-    </div>
+    <DataPolar></DataPolar>
   </div>
 </template>
 <script>
@@ -24,21 +16,7 @@ export default {
 <style lang="less" scoped>
 .polar {
   width: 100%;
-  position: relative;
-  &-img {
-    width: 100%;
-  }
-  &-cell {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    &-comps {
-      padding-top: 15px;
-    }
-  }
+  padding-left: 15px;
+  padding-right: 10px;
 }
 </style>

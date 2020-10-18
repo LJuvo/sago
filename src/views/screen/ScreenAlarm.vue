@@ -1,10 +1,5 @@
 <template>
-    <div class="alarm">
-        <img class="alarm-img" src="../images/alarm.png"/>
-        <div class="alarm-cell">
-            <AlarmTarget></AlarmTarget>
-        </div>
-    </div>
+    <AlarmTarget></AlarmTarget>
 </template>
 <script>
 import AlarmTarget from "./AlarmTarget";

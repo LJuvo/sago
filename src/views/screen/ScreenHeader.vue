@@ -1,6 +1,6 @@
 <template>
     <div class="screen-header">
-        <img class="screen-header-img" src="../images/head.png"/>
+        <img class="screen-header-img" src="../images/img/top.png"/>
     </div>
 </template>
 <script>
