@@ -5,13 +5,15 @@
     </div>
     <div class="pane-body" id="warnBody">
       
-        <div class="pane-body-box">
-            <slot></slot>
-        </div>
+        
     </div>
     <div class="pane-footer">
       <img class="pane-img" src="../images/img/alarm_bottom.png" />
     </div>
+
+    <div class="pane-box">
+            <slot></slot>
+        </div>
   </div>
 </template>
 <script>
@@ -61,12 +63,7 @@ export default {
     background: url("../images/img/alarm_center.png");
     background-repeat: no-repeat;
     background-size: 100% 100%;
-    &-box {
-      width: 100%;
-      overflow: hidden;
-      overflow-y: auto;
-      padding: 0 20px;
-    }
+    
   }
   &-footer {
     width: 100%;
@@ -75,5 +72,16 @@ export default {
   &-img {
     width: 100%;
   }
+
+  &-box {
+      width: 100%;
+          height: calc(100% - 30px);
+    overflow: hidden;
+    overflow-y: auto;
+    padding: 30px 20px;
+      position: absolute;
+      top: 20px;
+      left: 0;
+    }
 }
 </style>

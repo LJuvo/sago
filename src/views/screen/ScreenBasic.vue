@@ -1,13 +1,16 @@
 <template>
     <div class="pane">
         <div class="pane-head">
-            <img class="pane-img" src="../images/img/target_top.png"/>
+            <img class="pane-img" src="images/img/target_top.png"/>
         </div>
         <div class="pane-body">
-            <slot></slot>
+           
         </div>
         <div class="pane-footer">
-            <img class="pane-img" src="../images/img/target_bottom.png"/>
+            <img class="pane-img" src="images/img/target_bottom.png"/>
+        </div>
+        <div class="pane-box">
+            <slot></slot>
         </div>
     </div>
 </template>
@@ -30,6 +33,14 @@ export default {
             type: String,
             default: "0 0"
         },
+    },
+    data(){
+        return {
+
+        }
+    },
+    mounted(){
+
     }
 }
 </script>
@@ -47,9 +58,7 @@ export default {
     &-body {
         width: 100%;
         flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
+        
         background: url("../images/img/target_center.png");
         background-repeat: no-repeat;
         background-size: 100% 100%;
@@ -59,6 +68,16 @@ export default {
     }
     &-img {
         width: 100%;
+    }
+    &-box {
+        position: absolute;
+        top: 40px;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 100px);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
 }
 </style>

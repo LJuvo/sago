@@ -4,8 +4,9 @@
     :after-change="onChange"
     dotPosition="bottom"
     :dots="true"
+    autoplay
   >
-    <div class="video-cell-node">
+    <div class="video-cell-node" v-for="(item,index) in videos" :key="index">
       <a-row :gutter="[16, 16]">
         <a-col :span="12">
           <VideoPane class="video-cell-node-movie">
@@ -33,9 +34,6 @@
         </a-col>
       </a-row>
     </div>
-    <div class="video-cell-carousel"><h3>2</h3></div>
-    <div class="video-cell-carousel"><h3>3</h3></div>
-    <div class="video-cell-carousel"><h3>4</h3></div>
   </a-carousel>
 </template>
 <script>
@@ -45,6 +43,11 @@ export default {
   components: {
     Carousel,
     VideoPane
+  },
+  data(){
+    return {
+      videos: [1,2,3,4]
+    }
   },
   methods: {
     onChange() {}

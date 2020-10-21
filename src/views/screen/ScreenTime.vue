@@ -1,10 +1,15 @@
 <template>
-  <div class="screen-date">
+  <div class="date-weather">
+    <div class="screen-date">
     <div class="screen-date-time">{{ time }}</div>
     <div class="screen-date-today">
       <div class="screen-date-today-year">{{ today }}</div>
       <div class="screen-date-today-week">{{ week }}</div>
     </div>
+  </div>
+  <div class="screen-weather">
+    <img class="screen-weather-img" src="weather/sun.png" />
+  </div>
   </div>
 </template>
 <script>
@@ -77,5 +82,16 @@ export default {
       text-align: right;
     }
   }
+}
+.screen-weather {
+    margin-left: 1vw;
+    &-img {
+      width: 4vw;
+    }
+  }
+.date-weather {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
 }
 </style>

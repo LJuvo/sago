@@ -5,23 +5,18 @@
 import DataSet from "@antv/data-set";
 import { Chart } from "@antv/g2";
 export default {
+  props:{
+    polarArr : {
+      type: Array,
+      default: []
+    }
+  },
   mounted() {
-
-    this.fetchPolar()
+    this.initPolar(this.polarArr);
+    
   },
   methods:{
-    fetchPolar() {
-      this.$axios({
-        url: "/act/current/zhibiaoValue",
-        method: "get",
-        headers: {
-          "Content-Type": "application/json;charset=UTF-8"
-        }
-      }).then(res => {
-        console.log(res.data.data);
-        this.initPolar(res.data.data)
-      });
-    },
+   
     initPolar(polarArr){
       const data = polarArr;
     //   const data = [
@@ -141,6 +136,7 @@ export default {
 <style lang="less" scoped>
 .screen-polar {
   width: 100%;
+  height: 100%;
   margin: 0 auto;
 }
 </style>

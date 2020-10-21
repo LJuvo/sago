@@ -1,13 +1,13 @@
 <template>
     <div class="pane">
         <div class="pane-head">
-            <img class="pane-img" src="../images/img/scene_top.png"/>
+            <img class="pane-img" src="images/img/scene_top.png"/>
         </div>
         <div class="pane-body">
             <slot></slot>
         </div>
         <div class="pane-footer">
-            <img class="pane-img" src="../images/img/scene_bottom.png"/>
+            <img class="pane-img" src="images/img/scene_bottom.png"/>
         </div>
     </div>
 </template>

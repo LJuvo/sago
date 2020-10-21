@@ -1,45 +1,61 @@
 <template>
   <div class="alarm-target">
-    <div class="target-cell" v-for="(item, key) in targetArr" :key="key">
+    <div class="target-cell" v-for="(item, key) in alarmArr" :key="key">
       <div class="target-cell-title">
-        <div class="target-cell-title-address">{{item.address}}</div>
-        <div class="target-cell-title-time">{{item.time}}</div>
-        <div class="target-cell-title-alarm" :style="{color: alarmColor[item.grade]}">{{item.type}}</div>
+        <div class="target-cell-title-address">{{item.name}}</div>
+        <div class="target-cell-title-time">{{backTime(item.dt)}}</div>
+        <div class="target-cell-title-alarm" :style="{color: backColor(item.type)}">{{item.type}}</div>
       </div>
-      <div class="target-cell-info">{{item.info}}</div>
+      <div class="target-cell-info">【{{item.status}}】{{item.title}}</div>
     </div>
   </div>
 </template>
 <script>
+import dayjs from "dayjs";
 export default {
+  props: {
+    alarmArr: {
+      type: Array,
+      default: []
+    }
+  },
   data() {
     return {
-      targetArr: [],
       blank: "  ",
-      alarmColor: ["red", "orange", "yellow", "green", "blue"]
+      alarmType: ["严重", "告警", "预警", "一般", "正常"],
+      alarmColor: ["red", "orange", "yellow", "blue", "green"]
     };
   },
   mounted() {
-    this.targetArr = [
-      { type: "告警", grade: 2, time: "2020.10.14", address: "五彩池", info: "水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超标" 
-      },
-      { type: "异常", grade: 0, time: "2020.10.14", address: "五彩池", info: "水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超标" 
-      },
-      { type: "告警", grade: 2, time: "2020.10.14", address: "五彩池", info: "水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超标" 
-      },
-      { type: "异常", grade: 0, time: "2020.10.14", address: "五彩池", info: "水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超标" 
-      },
-      { type: "告警", grade: 2, time: "2020.10.14", address: "五彩池", info: "水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超标" 
-      },
-      { type: "异常", grade: 0, time: "2020.10.14", address: "五彩池", info: "水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超标" 
-      },
-      { type: "告警", grade: 2, time: "2020.10.14", address: "五彩池", info: "水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超标" 
-      },
-      { type: "异常", grade: 0, time: "2020.10.14", address: "五彩池", info: "水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超标" 
-      },
-    ];
+    // this.targetArr = [
+    //   { type: "告警", grade: 2, time: "2020.10.14", address: "五彩池", info: "水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超标" 
+    //   },
+    //   { type: "异常", grade: 0, time: "2020.10.14", address: "五彩池", info: "水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超标" 
+    //   },
+    //   { type: "告警", grade: 2, time: "2020.10.14", address: "五彩池", info: "水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超标" 
+    //   },
+    //   { type: "异常", grade: 0, time: "2020.10.14", address: "五彩池", info: "水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超标" 
+    //   },
+    //   { type: "告警", grade: 2, time: "2020.10.14", address: "五彩池", info: "水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超标" 
+    //   },
+    //   { type: "异常", grade: 0, time: "2020.10.14", address: "五彩池", info: "水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超标" 
+    //   },
+    //   { type: "告警", grade: 2, time: "2020.10.14", address: "五彩池", info: "水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超标" 
+    //   },
+    //   { type: "异常", grade: 0, time: "2020.10.14", address: "五彩池", info: "水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超水质污染超标水质污染超标水质污染超标" 
+    //   },
+    // ];
   },
-  methods: {}
+  methods: {
+    backColor(type){
+      const index = this.alarmType.findIndex(o=> {return o == type});
+      console.log("index -?", index, type);
+      return this.alarmColor[index];
+    },
+    backTime(time){
+      return dayjs(time).format("YYYY-MM-DD");
+    }
+  }
 };
 </script>
 <style lang="less" scoped>
@@ -87,6 +103,8 @@ export default {
       justify-content: space-between;
       text-align: center;
       margin-bottom: 8px;
+      padding: 4px 0;
+    background: rgba(17,42,79,0.8);
       &-address {
         width: 40%;
       }

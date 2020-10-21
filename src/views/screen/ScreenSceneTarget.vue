@@ -1,19 +1,11 @@
 <template>
     <div class="scene">
-        <img class="scene-img" src="../images/scene.png"/>
+        <img class="scene-img" src="healthy.png"/>
         <div class="scene-cell">
             <div class="scene-cell-panel">
-                <div class="scene-cell-node">
-                    <div class="scene-cell-node-title">珍珠滩</div>
-                    <div class="scene-cell-node-label">景点名称</div>
-                </div>
-                <div class="scene-cell-node">
-                    <div class="scene-cell-node-title">1.28</div>
-                    <div class="scene-cell-node-label">钙化数据</div>
-                </div>
-                <div class="scene-cell-node">
-                    <div class="scene-cell-node-title">优</div>
-                    <div class="scene-cell-node-label">指标数据</div>
+                <div class="scene-cell-node" v-for="(item,key) in targetArr" :key="key">
+                    <div class="scene-cell-node-title">{{item.name}}</div>
+                    <div class="scene-cell-node-label">{{item.value.toFixed(1)}}</div>
                 </div>
             </div>
         </div>
@@ -21,7 +13,12 @@
 </template>
 <script>
 export default {
-    
+    props:{
+        targetArr: {
+            type: Array,
+            default: []
+        }
+    }
 }
 </script>
 <style lang="less" scoped>
@@ -38,6 +35,7 @@ export default {
         width: 100%;
         height: calc(100% - 60px);
         padding-top: 50px;
+        color: #1cf017;
         &-panel{
             padding: 0 30px;
             width: 100%;
@@ -48,17 +46,18 @@ export default {
         &-node {
             margin: 0 auto;
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             justify-content: center;
             text-align: center;
-            align-content: center;
+            align-content: flex-end;
+            align-items: baseline;
             &-title {
-                font-size: 2.6vw;
-                color: #00fcff;
+                font-size: 1.3vw;
+                margin-right: 0.5vw;
             }
             &-label {
-                color: #ffffff;
-                font-size: 12px;
+                font-size: 2.6vw;
+                font-weight: 600;
             }
         }
     }
