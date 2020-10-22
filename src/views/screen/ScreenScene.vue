@@ -29,7 +29,7 @@ export default {
     &-body {
         width: 100%;
         flex: 1;
-        background: url("../images/img/scene_center.png");
+        background: url("./scene_center.png");
         background-repeat: no-repeat;
         background-size: 100% 100%;
     }

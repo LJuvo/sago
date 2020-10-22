@@ -24,7 +24,7 @@
       <div class="screen-wrapper-center">
         <ScreenSceneTarget :targetArr="sceneTargetData"></ScreenSceneTarget>
         <div class="screen-wrapper-center-node">
-          <ScreenMap></ScreenMap>
+          <ScreenMap @on-touch="refreshTarget"></ScreenMap>
         </div>
       </div>
       <div class="screen-wrapper-right">
@@ -32,50 +32,38 @@
           <ScreenVideo></ScreenVideo>
         </ScreenScene>
         <ScreenWarn id="sceneRef">
-          <FormTarget :alarmArr="alarmData"></FormTarget>
+          <FormTarget :alarmArr="alarmData" @on-show="showAlarmMask"></FormTarget>
         </ScreenWarn>
       </div>
     </div>
-    <div class="screen-mask" v-if="maskStatus">
-      <div class="screen-mask-box">
-        <img src="tips.png" />
-        <div class="screen-mask-box-close" @click="maskStatus = false"></div>
-        <div class="mask-row">
-          <div class="mask-column" v-for="(title,index) in infoData"  :key="index">
-            <div class="mask-column-title">{{title.title}}</div>
-            <div class="mask-column-label">{{title.label}}</div>
-            <div class="mask-column-cell" v-for="(item,key) in title.cell" :key="key">{{item.title}}:{{item.label}}</div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <MaskBox v-model="lineMaskStatus" :infoData="infoData" @close="lineMaskStatus = false"></MaskBox>
+    <MaskAlarm v-model="alarmMaskStatus"  @close="alarmMaskStatus = false"></MaskAlarm>
+    <img src="images/map.svg" style="display:none;"/>
   </div>
 </template>
 
 <script>
 import ScreenHeader from "./screen/ScreenHeader";
-import ScreenPane from "./screen/ScreenPane";
 import ScreenBasic from "./screen/ScreenBasic";
 import ScreenScene from "./screen/ScreenScene";
 import ScreenWarn from "./screen/ScreenWarn";
 import ScreenSceneTarget from "./screen/ScreenSceneTarget";
 import ScreenMap from "./screen/ScreenMap";
 import ScreenPole from "./screen/ScreenPolee";
-import ScreenAlarm from "./screen/ScreenAlarm";
 import ScreenVideo from "./screen/ScreenVideo";
 import FormTarget from "./screen/FormTarget";
 import ScreenTime from "./screen/ScreenTime";
 
 import DataLine from "./screen/DataLine";
 import DataPolar from "./screen/DataPolar";
+import MaskBox from "./screen/MaskBox";
+import MaskAlarm from "./screen/MaskAlarm";
 export default {
   components: {
     ScreenHeader,
-    ScreenPane,
     ScreenSceneTarget,
     ScreenMap,
     ScreenPole,
-    ScreenAlarm,
     ScreenVideo,
     FormTarget,
     ScreenTime,
@@ -85,7 +73,9 @@ export default {
     ScreenWarn,
 
     DataLine,
-    DataPolar
+    DataPolar,
+    MaskBox,
+    MaskAlarm
   },
   data() {
     return {
@@ -95,9 +85,11 @@ export default {
       polarData: [],
       sceneTargetData: [],
       alarmData: [],
-      maskStatus: false,
+      lineMaskStatus: false,
+      alarmMaskStatus: false,
 
-      infoData: []
+      infoData: [],
+      maskAlarmData:{}
     };
   },
   mounted() {
@@ -159,7 +151,17 @@ export default {
           result: "",
           status: "处理中",
           title: "浊度上升",
-          type: "预警"
+          type: "正常"
+        },
+        {
+          dt: "2020-10-16 02:40:30",
+          id: 5,
+          method: "持续观察",
+          name: "犀牛海",
+          result: "",
+          status: "处理中",
+          title: "浊度上升",
+          type: "紧急"
         }
       ];
     },
@@ -177,15 +179,15 @@ export default {
       //   })
       //   .catch(() => {
       let arr = [
-        { name: "美景指数", value: 7.6 },
-        { name: "遗产健康指数", value: 7.4 },
-        { name: "水体景观", value: 6.8 },
-        { name: "钙华景观", value: 7.6 },
-        { name: "生物生态景观", value: 7.8 },
-        { name: "地貌", value: 8.3 },
-        { name: "水文水质", value: 6.5 },
-        { name: "生物多样性", value: 8.6 },
-        { name: "气候", value: 7.1 }
+        { name: "美景指数", value: Math.round((Math.random() *10)) },
+        { name: "遗产健康指数", value: Math.round((Math.random() *10)) },
+        { name: "水体景观", value: Math.round((Math.random() *10)) },
+        { name: "钙华景观", value: Math.round((Math.random() *10)) },
+        { name: "生物生态景观", value: Math.round((Math.random() *10)) },
+        { name: "地貌", value: Math.round((Math.random() *10)) },
+        { name: "水文水质", value: Math.round((Math.random() *10))},
+        { name: "生物多样性", value: Math.round((Math.random() *10)) },
+        { name: "气候", value: Math.round((Math.random() *10)) }
       ];
       this.setPolar(arr);
       // });
@@ -202,7 +204,7 @@ export default {
     },
     setMask() {
       this.fetchInfo();
-      this.maskStatus = true;
+      this.lineMaskStatus = true;
     },
     fetchInfo(){
       this.infoData = [
@@ -231,6 +233,12 @@ export default {
           { title:"CO", label: "5.8"},
         ]}
       ]
+    },
+    showAlarmMask(v){
+      this.alarmMaskStatus = true;
+    },
+    refreshTarget(v){
+      this.fetchPolar()
     }
   }
 };
@@ -249,7 +257,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  background: url("./images/bg.png") no-repeat;
+  background: url("./screen/bg.png") no-repeat;
   background-size: cover;
   background-position: center 0;
   &-top {
@@ -288,33 +296,7 @@ export default {
       flex-direction: column;
     }
   }
-  &-mask {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 10;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    &-box {
-      margin: 0 auto;
-      width: 45vw;
-      position: relative;
-      img {
-        width: 100%;
-      }
-      &-close {
-        right: 50px;
-        top: 35px;
-        width: 30px;
-        height: 30px;
-        position: absolute;
-      }
-    }
-  }
+  
 }
 .basic-wrapper {
   width: 100%;
@@ -337,31 +319,5 @@ export default {
     height: 36%;
   }
 }
-.mask {
-  &-row {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    position: absolute;
-    top: 20%;
-    left: 5%;
-    width: 90%;
-  }
-  &-column {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    color: #02d5dd;
-    &-title {
-      font-size: 40px;
-      line-height: 35px;
-    }
-    &-label {
-      font-size: 30px;
-    }
-    &-cell {
-      font-size: 16px;
-    }
-  }
-}
+
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="alarm-target">
-    <div class="target-cell" v-for="(item, key) in alarmArr" :key="key">
+    <div class="target-cell" v-for="(item, key) in alarmArr" :key="key" @click="$emit('on-show',item)">
       <div class="target-cell-title">
         <div class="target-cell-title-address">{{item.name}}</div>
         <div class="target-cell-title-time">{{backTime(item.dt)}}</div>
@@ -22,8 +22,8 @@ export default {
   data() {
     return {
       blank: "  ",
-      alarmType: ["严重", "告警", "预警", "一般", "正常"],
-      alarmColor: ["red", "orange", "yellow", "blue", "green"]
+      alarmType: ["异常", "告警", "紧急", "未知", "正常"],
+      alarmColor: ["#ff6825", "#ffbf25", "#ff2525", "#d4d4d4", "#18d724"]
     };
   },
   mounted() {
@@ -49,7 +49,7 @@ export default {
   methods: {
     backColor(type){
       const index = this.alarmType.findIndex(o=> {return o == type});
-      console.log("index -?", index, type);
+      // console.log("index -?", index, type);
       return this.alarmColor[index];
     },
     backTime(time){

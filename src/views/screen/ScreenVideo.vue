@@ -10,25 +10,25 @@
       <a-row :gutter="[16, 16]">
         <a-col :span="12">
           <VideoPane class="video-cell-node-movie">
-            <img class="video-movie" src="../images/img/tiger.png" />
+            <img class="video-movie" src="images/img/tiger.png" />
             <div class="video-title">珍珠滩</div>
           </VideoPane>
         </a-col>
         <a-col :span="12">
           <VideoPane class="video-cell-node-movie">
-            <img class="video-movie" src="../images/img/sea.png" />
+            <img class="video-movie" src="images/img/sea.png" />
             <div class="video-title">珍珠滩</div>
           </VideoPane>
         </a-col>
         <a-col :span="12">
           <VideoPane class="video-cell-node-movie">
-            <img class="video-movie" src="../images/img/scene.png" />
+            <img class="video-movie" src="images/img/scene.png" />
             <div class="video-title">珍珠滩</div>
           </VideoPane>
         </a-col>
         <a-col :span="12">
           <VideoPane class="video-cell-node-movie">
-            <img class="video-movie" src="../images/img/dragion.png" />
+            <img class="video-movie" src="images/img/dragion.png" />
             <div class="video-title">珍珠滩</div>
           </VideoPane>
         </a-col>

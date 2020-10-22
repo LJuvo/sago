@@ -1,6 +1,6 @@
 <template>
     <div class="scene">
-        <img class="scene-img" src="healthy.png"/>
+        <img class="scene-img" src="images/healthy.png"/>
         <div class="scene-cell">
             <div class="scene-cell-panel">
                 <div class="scene-cell-node" v-for="(item,key) in targetArr" :key="key">

@@ -10,7 +10,7 @@ export default {
     this.$nextTick(() => {
       setTimeout(() => {
         this.svgInit();
-      }, 0);
+      }, 1000);
     });
   },
   methods: {
@@ -18,21 +18,34 @@ export default {
       let cavP = document.getElementById("cavPane");
       let cavPW = cavP.offsetWidth;
       let cavPH = cavP.offsetHeight;
-      d3.svg("/map.svg").then(result => {
-        console.log(result);
-
+      d3.svg("/images/map.svg").then(result => {
         document.getElementById("cavPane").appendChild(result.documentElement);
         d3.select("#cavPane")
           .select("svg")
           .attr("height", "80%");
+        let self = this;
         let svg = d3.select("#cavPane").select("svg");
+
+
+        d3.select("#cavPane")
+          .select("svg")
+          .selectAll("circle")
+          .on("click", function(v) {
+            self.$emit("on-touch");
+          });
+        d3.select("#cavPane")
+          .select("svg")
+          .selectAll(".st10")
+          .on("click", function(v) {
+            self.$emit("on-touch");
+          });
         svg.call(
           d3
             .zoom()
             .scaleExtent([0.5, 3])
             .on("zoom", ele => {
               let transform = ele.transform;
-              console.log("scale ->", transform.k);
+              // console.log("scale ->", transform.k);
               const scale = transform.k;
               if (scale > 0.7) {
                 d3.selectAll(".scale05").attr("visibility", "hidden");
@@ -54,7 +67,12 @@ export default {
               } else {
                 d3.selectAll(".scale20").attr("visibility", "visible");
               }
-              svg.attr("transform", "scale(" + transform.k + ")");
+              svg.attr(
+                "transform",
+                "scale(" +
+                  transform.k +
+                  ")"
+              );
             })
         );
 
@@ -67,7 +85,7 @@ export default {
         // .translateExtent([[-100, -100], [cavPW + 90, cavPW + 100]]).call(zoom);
       });
 
-      d3.svg("/legend.svg").then(result => {
+      d3.svg("/images/legend.svg").then(result => {
         document
           .getElementById("legendPane")
           .appendChild(result.documentElement);

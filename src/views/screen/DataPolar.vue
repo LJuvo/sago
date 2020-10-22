@@ -11,6 +11,11 @@ export default {
       default: []
     }
   },
+  watch:{
+    polarArr(v){
+      this.initPolar(v)
+    }
+  },
   mounted() {
     this.initPolar(this.polarArr);
     
@@ -37,12 +42,13 @@ export default {
       value: "score" // value字段
     });
 
+document.getElementById("polar").innerHTML = "";
     const chart = new Chart({
       container: "polar",
       autoFit: true,
       height: 250
     });
-    chart.data(dv.rows);
+  
     
     chart.scale("score", {
       min: 0,
@@ -128,7 +134,7 @@ export default {
         fill: "#02FF02",
         fillOpacity: 0.2
       });
-    chart.render();
+    chart.changeData(dv.rows);
     }
   }
 };

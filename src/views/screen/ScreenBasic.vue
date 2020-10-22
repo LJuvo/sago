@@ -59,7 +59,7 @@ export default {
         width: 100%;
         flex: 1;
         
-        background: url("../images/img/target_center.png");
+        background: url("./target_center.png");
         background-repeat: no-repeat;
         background-size: 100% 100%;
     }

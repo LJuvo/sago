@@ -1,14 +1,14 @@
 <template>
   <div class="pane">
     <div class="pane-head">
-      <img class="pane-img" src="../images/img/alarm_top.png" />
+      <img class="pane-img" src="images/img/alarm_top.png" />
     </div>
     <div class="pane-body" id="warnBody">
       
         
     </div>
     <div class="pane-footer">
-      <img class="pane-img" src="../images/img/alarm_bottom.png" />
+      <img class="pane-img" src="images/img/alarm_bottom.png" />
     </div>
 
     <div class="pane-box">
@@ -60,7 +60,7 @@ export default {
   &-body {
     width: 100%;
     flex: 1;
-    background: url("../images/img/alarm_center.png");
+    background: url("./alarm_center.png");
     background-repeat: no-repeat;
     background-size: 100% 100%;
     

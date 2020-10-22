@@ -4,6 +4,7 @@
     :after-change="onChange"
     dotPosition="bottom"
     :dots="true"
+    autoplay
   >
     <div
       style="height:100%;"

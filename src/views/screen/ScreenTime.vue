@@ -8,7 +8,7 @@
     </div>
   </div>
   <div class="screen-weather">
-    <img class="screen-weather-img" src="weather/sun.png" />
+    <!-- <img class="screen-weather-img" src="weather/sun.png" /> -->
   </div>
   </div>
 </template>

@@ -1,13 +1,13 @@
 <template>
     <div class="pane">
         <div class="pane-head">
-            <img class="pane-img" src="../images/img/target_top.png"/>
+            <img class="pane-img" src="images/img/target_top.png"/>
         </div>
         <div class="pane-body">
             <slot></slot>
         </div>
         <div class="pane-footer">
-            <img class="pane-img" src="../images/img/target_bottom.png"/>
+            <img class="pane-img" src="images/img/target_bottom.png"/>
         </div>
     </div>
 </template>
@@ -46,7 +46,7 @@ export default {
     &-body {
         width: 100%;
         flex: 1;
-        background: url("../images/img/target_center.png");
+        background: url("images/img/target_center.png");
         background-repeat: no-repeat;
         background-size: 100% 100%;
     }
