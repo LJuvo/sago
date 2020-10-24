@@ -67,14 +67,16 @@ export default {
   justify-content: flex-start;
   color: #ffffff;
   &-time {
-    font-size: 50px;
-    line-height: 40px;
+    font-size: 45px;
+    line-height: 35px;
     font-family: Digital;
   }
   &-today {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    padding-left: 5px;
+    font-size: 16px;
     &-year {
       text-align: left;
     }

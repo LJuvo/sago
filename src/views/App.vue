@@ -3,6 +3,7 @@
     <div class="screen-top">
       <ScreenHeader></ScreenHeader>
       <ScreenTime class="screen-top-time"></ScreenTime>
+      <ScreenCoin class="screen-top-coin"></ScreenCoin>
     </div>
     <div class="screen-wrapper">
       <div class="screen-wrapper-left">
@@ -25,6 +26,7 @@
         <ScreenSceneTarget :targetArr="sceneTargetData"></ScreenSceneTarget>
         <div class="screen-wrapper-center-node">
           <ScreenMap @on-touch="refreshTarget"></ScreenMap>
+          <ScreenLegend></ScreenLegend>
         </div>
       </div>
       <div class="screen-wrapper-right">
@@ -49,10 +51,12 @@ import ScreenScene from "./screen/ScreenScene";
 import ScreenWarn from "./screen/ScreenWarn";
 import ScreenSceneTarget from "./screen/ScreenSceneTarget";
 import ScreenMap from "./screen/ScreenMap";
+import ScreenLegend from "./screen/ScreenLegend";
 import ScreenPole from "./screen/ScreenPolee";
 import ScreenVideo from "./screen/ScreenVideo";
 import FormTarget from "./screen/FormTarget";
 import ScreenTime from "./screen/ScreenTime";
+import ScreenCoin from "./screen/ScreenCoin";
 
 import DataLine from "./screen/DataLine";
 import DataPolar from "./screen/DataPolar";
@@ -63,10 +67,12 @@ export default {
     ScreenHeader,
     ScreenSceneTarget,
     ScreenMap,
+    ScreenLegend,
     ScreenPole,
     ScreenVideo,
     FormTarget,
     ScreenTime,
+    ScreenCoin,
 
     ScreenBasic,
     ScreenScene,
@@ -268,6 +274,11 @@ export default {
       left: 3vw;
       bottom: 2vh;
     }
+    &-coin {
+      position: absolute;
+      right: 3vw;
+      bottom: 2vh;
+    }
   }
   &-wrapper {
     flex: 1;
@@ -281,11 +292,13 @@ export default {
     }
     &-center {
       flex: 1;
+      height: 100%;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
       &-node {
         flex: 1;
+        position: relative;
       }
     }
     &-right {
@@ -305,13 +318,13 @@ export default {
 .wrapper {
   &-polar {
     width: 100%;
-    height: 40%;
+    height: 30%;
     padding-left: 15px;
     padding-right: 10px;
   }
   &-pole {
     width: 100%;
-    height: 18%;
+    height: 28%;
     padding-top: 2%;
     overflow: hidden;
   }

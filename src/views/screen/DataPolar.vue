@@ -46,7 +46,7 @@ document.getElementById("polar").innerHTML = "";
     const chart = new Chart({
       container: "polar",
       autoFit: true,
-      height: 250
+      height: document.getElementById("polar").offsetHeight
     });
   
     
@@ -76,7 +76,8 @@ document.getElementById("polar").innerHTML = "";
       tickLine: null,
       label:{
         style: {
-          fill: "#00FFEF"
+          fill: "#00FFEF",
+          fontSize: 14
         }
       },
       grid: {

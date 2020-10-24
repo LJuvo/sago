@@ -10,18 +10,28 @@ export default {
     for (let i = 0; i < 12; i++) {
       arr.push({
         month: i + 1 + "月",
+        scene: "美景指数",
+        scord: Math.random(0, 10) * 10
+      });
+      arr.push({
+        month: i + 1 + "月",
+        scene: "健康指数",
+        scord: Math.random(0, 10) * 10
+      });
+      arr.push({
+        month: i + 1 + "月",
         scene: "气候",
-        scord: Math.random(0, 10)* 10
+        scord: Math.random(0, 10) * 10
       });
       arr.push({
         month: i + 1 + "月",
         scene: "地貌",
-        scord: Math.random(0, 10)* 10
+        scord: Math.random(0, 10) * 10
       });
       arr.push({
         month: i + 1 + "月",
         scene: "水文",
-        scord: Math.random(0, 10)* 10
+        scord: Math.random(0, 10) * 10
       });
       arr.push({
         month: i + 1 + "月",
@@ -29,13 +39,20 @@ export default {
         scord: Math.random(0, 10) * 10
       });
     }
-    const sceneArr = ["气候", "地貌", "水文", "生物多样性"];
+    const sceneArr = [
+      "美景指数",
+      "健康指数",
+      "气候",
+      "地貌",
+      "水文",
+      "生物多样性"
+    ];
     const data = arr;
 
     const chart = new Chart({
       container: "dataLine",
       autoFit: true,
-      height: 300
+      height: document.getElementById("dataLine").offsetHeight
     });
 
     chart.data(data);
@@ -47,7 +64,7 @@ export default {
         nice: true
       }
     });
- 
+
     chart.tooltip({
       shared: true,
       showCrosshairs: true,
@@ -61,6 +78,12 @@ export default {
         }
       }
     });
+    chart.legend({
+      flipPage: false,
+      marker: {
+        symbol: "circle"
+      }
+    });
 
     chart.axis("scord", {
       label: {
@@ -70,12 +93,24 @@ export default {
       }
     });
 
-    const colors = ["#00d1d9", "#70ec39", "#f18020", "#ff3600"];
-    const acolors = ["#70ec39-#0050B3-#0e213e", "#00d1d9-#0050B3-#0e213e", "#f18020-#0050B3-#0e213e", "#ff3600-#0050B3-#0e213e"];
+    const colors = [
+      "#00d1d9",
+      "#70ec39",
+      "#f18020",
+      "#ff3600",
+      "#0050B3",
+      "#0e213e"
+    ];
+    const acolors = [
+      "#70ec39-#0050B3-#0e213e",
+      "#00d1d9-#0050B3-#0e213e",
+      "#f18020-#0050B3-#0e213e",
+      "#ff3600-#0050B3-#0e213e"
+    ];
     chart
       .area()
       .position("month*scord")
-      .color('scene', colors)
+      .color("scene", colors)
       .style({
         fillOpacity: 0.2
       });
@@ -89,24 +124,29 @@ export default {
       .position("month*scord")
       .shape("circle")
       .style({
-  fields: ['scene'], // 数据字段
-  callback: (xVal) => {
-    const style = { lineWidth: 2, fill: "#000",fillOpacity: 0.6, stroke: colors[sceneArr.findIndex(o=>{
-      return o === xVal;
-    })] };
-    return style;
-  },
-})
-      // .adjust('jitter')
-      // .shape('circle')
-      // .style({
-      //   opacity: 0.65,
-      // })
+        fields: ["scene"], // 数据字段
+        callback: xVal => {
+          const style = {
+            lineWidth: 2,
+            fill: "#000",
+            fillOpacity: 0.6,
+            stroke:
+              colors[
+                sceneArr.findIndex(o => {
+                  return o === xVal;
+                })
+              ]
+          };
+          return style;
+        }
+      });
 
     chart.on("click", event => {
-      const shape = event.data.shape;
-      if (shape == "circle") {
-        this.$emit("circle", event.data.data);
+      if (event && event.data) {
+        const shape = event.data.shape;
+        if (shape == "circle") {
+          this.$emit("circle", event.data.data);
+        }
       }
     });
 
