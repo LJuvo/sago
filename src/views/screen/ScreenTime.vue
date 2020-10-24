@@ -75,7 +75,7 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding-left: 5px;
+    padding-left: 2px;
     font-size: 16px;
     &-year {
       text-align: left;

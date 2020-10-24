@@ -23,7 +23,7 @@ export default {
     return {
       blank: "  ",
       alarmType: ["异常", "告警", "紧急", "未知", "正常"],
-      alarmColor: ["#ff6825", "#ffbf25", "#ff2525", "#d4d4d4", "#18d724"]
+      alarmColor: ["#ff6825", "#ffbf25", "#FF5722", "#d4d4d4", "#18d724"]
     };
   },
   mounted() {

@@ -1,7 +1,9 @@
 <template>
   <div class="coin">
     <div class="coin-point" v-for="(item,index) of coinArr" :key="index">
+      <a>
       <img :src="item"/>
+      </a>
     </div>
   </div>
 </template>
@@ -31,7 +33,11 @@ export default {
     width:60px;
     height: 60px;
     margin-right: 10px;
-    
+    cursor: pointer;
+    a{
+      display: block;
+      height: 100%;
+    }
     img {
       width: 100%;
       height: 100%;

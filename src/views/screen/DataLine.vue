@@ -1,10 +1,73 @@
 <template>
-  <div class="screen-polar" id="dataLine"></div>
+  <div class="screen-line" id="dataLineBox">
+    <div id="dataLine"></div>
+    <div class="line-box">
+      <!-- <div class="line-box-time">
+        <div :class="{'line-box-time-cell':true,'line-cell-active': currentType == 'day'}" @click="currentType='day'">日度</div>
+        <div :class="{'line-box-time-cell':true,'line-cell-active': currentType == 'month'}" @click="currentType='month'">月度</div>
+        <div :class="{'line-box-time-cell':true,'line-cell-active': currentType == 'year'}" @click="currentType='year'">年度</div>
+      </div> -->
+      <div class="line-check" v-show="showLegend">
+      <div class="line-check-cell">
+        <div class="line-cell" v-for="(item, index) of firstRow" :key="index">
+          <span
+            class="line-cell-circle"
+            :style="{ background: item.bg }"
+          ></span>
+          <span :class="{ 'line-cell-active': item.status }">{{
+            item.label
+          }}</span>
+        </div>
+      </div>
+      <div class="line-check-cell">
+        <div
+          class="line-cell"
+          v-for="(item, index) of secondRow"
+          :key="index"
+          @click="onClickSecondRow(index)"
+        >
+          <span
+            class="line-cell-circle"
+            :style="{ background: item.bg }"
+          ></span>
+          <span :class="{ 'line-cell-active': item.status }">{{
+            item.label
+          }}</span>
+        </div>
+      </div>
+    </div>
+    </div>
+    
+  </div>
 </template>
 <script>
 import DataSet from "@antv/data-set";
 import { Chart } from "@antv/g2";
 export default {
+  data() {
+    return {
+      basicData: [],
+      firstRow: [
+        { label: "美景指数", bg: "#00d1d9", status: true },
+        { label: "健康指数", bg: "#8bc34a", status: true }
+      ],
+      secondRow: [
+        { label: "气候", bg: "#f18020", status: false },
+        { label: "地貌", bg: "#ff3600", status: false },
+        { label: "水文", bg: "#40a9ff", status: false },
+        { label: "生物多样性", bg: "#18d724", status: false }
+      ],
+      showLegend: false,
+      isFirst: true,
+      setHeight: 0,
+      currentType: "day"
+    };
+  },
+  computed: {
+    allRow() {
+      return [...this.firstRow, ...this.secondRow];
+    }
+  },
   mounted() {
     const arr = [];
     for (let i = 0; i < 12; i++) {
@@ -39,126 +102,195 @@ export default {
         scord: Math.random(0, 10) * 10
       });
     }
-    const sceneArr = [
-      "美景指数",
-      "健康指数",
-      "气候",
-      "地貌",
-      "水文",
-      "生物多样性"
-    ];
-    const data = arr;
 
-    const chart = new Chart({
-      container: "dataLine",
-      autoFit: true,
-      height: document.getElementById("dataLine").offsetHeight
+    this.basicData = arr;
+    this.$nextTick(() => {
+      this.initLineChart();
+      this.isFirst = false;
     });
+  },
+  methods: {
+    initLineChart() {
+      console.log("data ->", this.allRow);
+      let showCells = [];
+      this.allRow.forEach(ele => {
+        if (ele.status) {
+          showCells.push(ele.label);
+        }
+      });
 
-    chart.data(data);
-    chart.scale({
-      month: {
-        range: [0, 1]
-      },
-      scord: {
-        nice: true
+      const data = this.basicData.filter(ele => {
+        return !!showCells.find(o => {
+          return o === ele.scene;
+        });
+      });
+      console.log("datss -> ", showCells, data);
+
+      const cpH = this.isFirst
+        ? document.getElementById("dataLineBox").offsetHeight
+        : this.setHeight;
+      const caH = cpH - 80;
+      if (this.isFirst) {
+        this.setHeight = cpH;
       }
-    });
 
-    chart.tooltip({
-      shared: true,
-      showCrosshairs: true,
-      crosshairs: {
-        line: {
-          style: {
-            lineDash: [4],
-            stroke: "#00FFEF",
-            fill: "#00FFEF"
+      document.getElementById("dataLine").innerHTML = "";
+      const chart = new Chart({
+        container: "dataLine",
+        autoFit: true,
+        height: caH
+      });
+
+      chart.data(data);
+      chart.scale({
+        month: {
+          range: [0, 1]
+        },
+        scord: {
+          nice: true
+        }
+      });
+
+      chart.tooltip({
+        shared: true,
+        showCrosshairs: true,
+        crosshairs: {
+          line: {
+            style: {
+              lineDash: [4],
+              stroke: "#00FFEF",
+              fill: "#00FFEF"
+            }
           }
         }
-      }
-    });
-    chart.legend({
-      flipPage: false,
-      marker: {
-        symbol: "circle"
-      }
-    });
-
-    chart.axis("scord", {
-      label: {
-        formatter: val => {
-          return val;
-        }
-      }
-    });
-
-    const colors = [
-      "#00d1d9",
-      "#70ec39",
-      "#f18020",
-      "#ff3600",
-      "#0050B3",
-      "#0e213e"
-    ];
-    const acolors = [
-      "#70ec39-#0050B3-#0e213e",
-      "#00d1d9-#0050B3-#0e213e",
-      "#f18020-#0050B3-#0e213e",
-      "#ff3600-#0050B3-#0e213e"
-    ];
-    chart
-      .area()
-      .position("month*scord")
-      .color("scene", colors)
-      .style({
-        fillOpacity: 0.2
       });
-    chart
-      .line()
-      .position("month*scord")
-      .color("scene", colors);
+      chart.legend(false);
 
-    chart
-      .point()
-      .position("month*scord")
-      .shape("circle")
-      .style({
-        fields: ["scene"], // 数据字段
-        callback: xVal => {
-          const style = {
-            lineWidth: 2,
-            fill: "#000",
-            fillOpacity: 0.6,
-            stroke:
-              colors[
-                sceneArr.findIndex(o => {
-                  return o === xVal;
-                })
-              ]
-          };
-          return style;
+      chart.axis("scord", {
+        label: {
+          formatter: val => {
+            return val;
+          }
         }
       });
 
-    chart.on("click", event => {
-      if (event && event.data) {
-        const shape = event.data.shape;
-        if (shape == "circle") {
-          this.$emit("circle", event.data.data);
-        }
-      }
-    });
+      let colorArr = [];
+      this.allRow.forEach(ele => {
+        colorArr.push(ele.bg);
+      });
+      const colors = colorArr;
+      chart
+        .area()
+        .position("month*scord")
+        .color("scene", colors)
+        .style({
+          fillOpacity: 0.2
+        });
+      chart
+        .line()
+        .position("month*scord")
+        .color("scene", colors);
 
-    chart.render();
+      chart
+        .point()
+        .position("month*scord")
+        .shape("circle")
+        .style({
+          fields: ["scene"], // 数据字段
+          callback: xVal => {
+            const style = {
+              lineWidth: 2,
+              fill: "#000",
+              fillOpacity: 0.6,
+              stroke: this.allRow.find(o => {
+                return o.label === xVal;
+              }).bg
+            };
+            return style;
+          }
+        });
+
+      chart.on("click", event => {
+        if (event && event.data) {
+          const shape = event.data.shape;
+          if (shape == "circle") {
+            this.$emit("circle", event.data.data);
+          }
+        }
+      });
+
+      chart.changeData(data);
+      this.showLegend = true;
+    },
+    onClickFirstRow(index) {
+      this.firstRow[index].status = !this.firstRow[index].status;
+    },
+    onClickSecondRow(index) {
+      this.secondRow[index].status = !this.secondRow[index].status;
+      this.initLineChart();
+    }
   }
 };
 </script>
 <style lang="less" scoped>
-.screen-polar {
+.screen-line {
   width: 100%;
   height: 100%;
   padding: 20px;
   margin: 0 auto;
+  position: relative;
+}
+.line-check {
+  flex: 1;
+  height: 40px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  &-cell {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+}
+.line{
+  &-box {
+    color: #bfbfbf;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    &-time {
+      display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 8px;
+    &-cell {
+      margin-right: 3px;
+      cursor: pointer;
+    }
+    }
+  }
+  &-cell {
+    
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  font-size: 8px;
+  margin-right: 6px;
+  cursor: pointer;
+  &-circle {
+    width: 10px;
+    height: 10px;
+    border-radius: 10px;
+    background: #eeeeee;
+    margin-right: 3px;
+  }
+  &-active {
+    color: #02d5dd;
+  }
+}
 }
 </style>

@@ -5,6 +5,7 @@
     dotPosition="bottom"
     :dots="true"
     autoplay
+    :autoplaySpeed="5000"
   >
     <div
       style="height:100%;"
@@ -16,9 +17,9 @@
         <div class="polee-left-title" style="height: 40px!important;">{{ basicObj.value || 0 }}</div>
         <div class="polee-left-label" style="height: auto!important;">{{ basicObj.name || "-" }}</div>
       </div>
-      <a-row style="height:100%;">
+      <a-row style="width: 80%;max-height:100%;">
         <a-col
-          :span="12"
+          :span="24"
           v-for="(item, index) in basicObj.banners"
           :key="index"
         >
@@ -45,17 +46,24 @@ export default {
         {
           name: "水体景观",
           value: 9.8,
-          banners: ["images/img/dragion.png", "images/img/scene.png"]
+          banners: ["images/img/dragion.png"
+          // , "images/img/scene.png"
+          ]
         },
         {
           name: "钙化景观",
           value: 7.8,
-          banners: ["images/img/sea.png", "images/img/tiger.png"]
+          banners: ["images/img/sea.png"
+          // , "images/img/tiger.png"
+          ]
         },
         {
           name: "生物生态景观",
           value: 9.2,
-          banners: ["images/img/dragion.png", "images/img/sea.png"]
+          banners: [
+            // "images/img/dragion.png",
+             "images/img/sea.png"
+          ]
         }
       ]
     };
