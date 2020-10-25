@@ -88,7 +88,7 @@ export default {
     height: 100%!important;
   }
   .slick-dots-bottom {
-    bottom: 5px!important;
+    bottom: -5px!important;
 }
 }
 </style>
@@ -120,6 +120,7 @@ export default {
 }
 .polee {
   &-left {
+        padding-left: 20px;
     display: flex;
     flex-direction: column;
     color: #00ffef;

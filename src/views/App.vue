@@ -326,7 +326,6 @@ export default {
     width: 100%;
     height: 28%;
     padding-top: 2%;
-    overflow: hidden;
   }
   &-line {
     height: 36%;

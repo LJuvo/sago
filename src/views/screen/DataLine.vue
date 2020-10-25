@@ -140,7 +140,7 @@ export default {
       const cpH = this.isFirst
         ? document.getElementById("dataLineBox").offsetHeight
         : this.setHeight;
-      const caH = cpH - 80;
+      const caH = cpH - 90;
       if (this.isFirst) {
         this.setHeight = cpH;
       }

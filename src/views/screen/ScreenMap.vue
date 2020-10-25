@@ -1,6 +1,5 @@
 <template>
-  <svg class="screen-map" id="cavPane">
-  </svg>
+  <svg class="screen-map" id="cavPane"></svg>
 </template>
 <script>
 import * as d3 from "d3";
@@ -67,33 +66,47 @@ export default {
         });
     },
     addMapScale(scale) {
-      if (scale > 0.7) {
+      if (scale < 0.9) {
         d3.selectAll(".scale05").attr("visibility", "hidden");
       } else {
         d3.selectAll(".scale05").attr("visibility", "visible");
       }
-      if (scale > 0.8) {
+      if (scale < 1.2) {
+        d3.selectAll(".scale07").attr("visibility", "hidden");
+      } else {
+        d3.selectAll(".scale07").attr("visibility", "visible");
+      }
+      if (scale < 0.8) {
         d3.selectAll(".scale08").attr("visibility", "hidden");
       } else {
         d3.selectAll(".scale08").attr("visibility", "visible");
       }
-      if (scale > 1.5) {
+      if (scale < 1.5) {
         d3.selectAll(".scale15").attr("visibility", "hidden");
       } else {
         d3.selectAll(".scale15").attr("visibility", "visible");
       }
-      if (scale > 2 || scale < 1.4) {
+      if (scale < 1.4) {
         d3.selectAll(".scale20").attr("visibility", "hidden");
       } else {
+        d3.selectAll(".scale20").attr("visibility", "visible");
+      }
+
+      if (scale > 2) {
+        d3.selectAll(".scale05").attr("visibility", "visible");
+        d3.selectAll(".scale07").attr("visibility", "visible");
+        d3.selectAll(".scale08").attr("visibility", "visible");
+        d3.selectAll(".scale15").attr("visibility", "visible");
         d3.selectAll(".scale20").attr("visibility", "visible");
       }
     },
     addMapVisible() {
       d3.selectAll(".scale05").attr("visibility", "hidden");
+      d3.selectAll(".scale07").attr("visibility", "hidden");
       d3.selectAll(".scale08").attr("visibility", "hidden");
       d3.selectAll(".scale15").attr("visibility", "hidden");
       d3.selectAll(".scale20").attr("visibility", "hidden");
-    },
+    }
   }
 };
 </script>
