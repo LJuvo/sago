@@ -50,7 +50,16 @@ export default {
     }
   },
   methods: {
-    onChange() {}
+    onChange() {
+      const a=[
+        [
+        {label:"珍珠滩", url: "images/img/dragion.png"},
+        {label:"珍珠滩", url: "images/img/dragion.png"},
+        {label:"珍珠滩", url: "images/img/dragion.png"},
+        {label:"珍珠滩", url: "images/img/dragion.png"},
+      ]
+      ]
+    }
   }
 };
 </script>

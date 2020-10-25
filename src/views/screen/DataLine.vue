@@ -2,11 +2,11 @@
   <div class="screen-line" id="dataLineBox">
     <div id="dataLine"></div>
     <div class="line-box">
-      <!-- <div class="line-box-time">
-        <div :class="{'line-box-time-cell':true,'line-cell-active': currentType == 'day'}" @click="currentType='day'">日度</div>
-        <div :class="{'line-box-time-cell':true,'line-cell-active': currentType == 'month'}" @click="currentType='month'">月度</div>
-        <div :class="{'line-box-time-cell':true,'line-cell-active': currentType == 'year'}" @click="currentType='year'">年度</div>
-      </div> -->
+      <div class="line-box-time">
+        <div :class="{'line-box-time-cell':true,'line-cell-active': currentType == 'day'}" @click="onChangeType('day')">日度</div>
+        <div :class="{'line-box-time-cell':true,'line-cell-active': currentType == 'month'}" @click="onChangeType('month')">月度</div>
+        <div :class="{'line-box-time-cell':true,'line-cell-active': currentType == 'year'}" @click="onChangeType('year')">年度</div>
+      </div>
       <div class="line-check" v-show="showLegend">
       <div class="line-check-cell">
         <div class="line-cell" v-for="(item, index) of firstRow" :key="index">
@@ -60,7 +60,7 @@ export default {
       showLegend: false,
       isFirst: true,
       setHeight: 0,
-      currentType: "day"
+      currentType: "year"
     };
   },
   computed: {
@@ -69,49 +69,60 @@ export default {
     }
   },
   mounted() {
-    const arr = [];
-    for (let i = 0; i < 12; i++) {
-      arr.push({
-        month: i + 1 + "月",
-        scene: "美景指数",
-        scord: Math.random(0, 10) * 10
-      });
-      arr.push({
-        month: i + 1 + "月",
-        scene: "健康指数",
-        scord: Math.random(0, 10) * 10
-      });
-      arr.push({
-        month: i + 1 + "月",
-        scene: "气候",
-        scord: Math.random(0, 10) * 10
-      });
-      arr.push({
-        month: i + 1 + "月",
-        scene: "地貌",
-        scord: Math.random(0, 10) * 10
-      });
-      arr.push({
-        month: i + 1 + "月",
-        scene: "水文",
-        scord: Math.random(0, 10) * 10
-      });
-      arr.push({
-        month: i + 1 + "月",
-        scene: "生物多样性",
-        scord: Math.random(0, 10) * 10
-      });
-    }
-
-    this.basicData = arr;
+    
     this.$nextTick(() => {
       this.initLineChart();
       this.isFirst = false;
     });
   },
   methods: {
+    setLineData(){
+      const arr = [];
+    let time = "时";
+    if(this.currentType=='month') {
+      time= "日";
+    }
+    if(this.currentType=='year') {
+      time= "月";
+    }
+    for (let i = 0; i < 12; i++) {
+      arr.push({
+        month: i + 1 + time,
+        scene: "美景指数",
+        scord: Math.random(0, 10) * 10
+      });
+      arr.push({
+        month: i + 1 + time,
+        scene: "健康指数",
+        scord: Math.random(0, 10) * 10
+      });
+      arr.push({
+        month: i + 1 + time,
+        scene: "气候",
+        scord: Math.random(0, 10) * 10
+      });
+      arr.push({
+        month: i + 1 + time,
+        scene: "地貌",
+        scord: Math.random(0, 10) * 10
+      });
+      arr.push({
+        month: i + 1 + time,
+        scene: "水文",
+        scord: Math.random(0, 10) * 10
+      });
+      arr.push({
+        month: i + 1 + time,
+        scene: "生物多样性",
+        scord: Math.random(0, 10) * 10
+      });
+    }
+
+    this.basicData = arr;
+    console.log(arr);
+    },
     initLineChart() {
-      console.log("data ->", this.allRow);
+      this.setLineData();
       let showCells = [];
       this.allRow.forEach(ele => {
         if (ele.status) {
@@ -228,6 +239,10 @@ export default {
     onClickSecondRow(index) {
       this.secondRow[index].status = !this.secondRow[index].status;
       this.initLineChart();
+    },
+    onChangeType(type){
+      this.currentType=type;
+      this.initLineChart();
     }
   }
 };
@@ -241,7 +256,7 @@ export default {
   position: relative;
 }
 .line-check {
-  flex: 1;
+  // flex: 1;
   height: 40px;
   display: flex;
   flex-direction: column;
@@ -259,7 +274,7 @@ export default {
     color: #bfbfbf;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     &-time {
       display: flex;
