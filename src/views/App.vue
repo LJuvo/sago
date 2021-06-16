@@ -1,250 +1,361 @@
 <template>
   <div class="screen">
-    <div class="screen-top">
-      <ScreenHeader></ScreenHeader>
-      <ScreenTime class="screen-top-time"></ScreenTime>
-      <ScreenCoin class="screen-top-coin"></ScreenCoin>
+    <div class="screen-tools">
+      <div v-for="(cell, key) in pathList" :key="key">
+        <a @click="checkMapPath(cell.path)">{{ cell.name }}</a>
+      </div>
+      <button @click="initPolygonMap()">刷新</button>
     </div>
-    <div class="screen-wrapper">
-      <div class="screen-wrapper-left">
-        <ScreenBasic>
-          <div class="wrapper-polar">
-            <DataPolar
-              v-if="polarData.length > 0"
-              :polarArr="polarData"
-            ></DataPolar>
-          </div>
-          <div class="wrapper-pole">
-            <ScreenPole :basicObj="waterScene"></ScreenPole>
-          </div>
-          <div class="wrapper-line">
-            <DataLine @circle="setMask"></DataLine>
-          </div>
-        </ScreenBasic>
-      </div>
-      <div class="screen-wrapper-center">
-        <ScreenSceneTarget :targetArr="sceneTargetData"></ScreenSceneTarget>
-        <div class="screen-wrapper-center-node">
-          <ScreenMap @on-touch="refreshTarget"></ScreenMap>
-          <ScreenLegend></ScreenLegend>
-        </div>
-      </div>
-      <div class="screen-wrapper-right">
-        <ScreenScene>
-          <ScreenVideo></ScreenVideo>
-        </ScreenScene>
-        <ScreenWarn id="sceneRef">
-          <FormTarget :alarmArr="alarmData" @on-show="showAlarmMask"></FormTarget>
-        </ScreenWarn>
-      </div>
+    <div
+      style="width: 500px;height: 500px;background: rgba(0,0,0,0.4);display:grid;"
+    >
+      <base-map ref="baseMap"></base-map>
     </div>
-    <MaskBox v-model="lineMaskStatus" :infoData="infoData" @close="lineMaskStatus = false"></MaskBox>
-    <MaskAlarm v-model="alarmMaskStatus"  @close="alarmMaskStatus = false"></MaskAlarm>
-    <img src="images/map.svg" style="display:none;"/>
+    <!-- <div>X Domain:<input v-model="mapXDomain" type="number" /></div>
+    <div>X Range:<input v-model="mapXRange" type="number" /></div>
+    <div>Y Domain:<input v-model="mapYDomain" type="number" /></div>
+    <div>Y Range:<input v-model="mapYRange" type="number" /></div>
+    <button @click="refreshMap">刷新</button> -->
+    <div id="map" style="width: 100%;height: 100%;"></div>
   </div>
 </template>
 
 <script>
-import ScreenHeader from "./screen/ScreenHeader";
-import ScreenBasic from "./screen/ScreenBasic";
-import ScreenScene from "./screen/ScreenScene";
-import ScreenWarn from "./screen/ScreenWarn";
-import ScreenSceneTarget from "./screen/ScreenSceneTarget";
-import ScreenMap from "./screen/ScreenMap";
-import ScreenLegend from "./screen/ScreenLegend";
-import ScreenPole from "./screen/ScreenPolee";
-import ScreenVideo from "./screen/ScreenVideo";
-import FormTarget from "./screen/FormTarget";
-import ScreenTime from "./screen/ScreenTime";
-import ScreenCoin from "./screen/ScreenCoin";
-
-import DataLine from "./screen/DataLine";
-import DataPolar from "./screen/DataPolar";
-import MaskBox from "./screen/MaskBox";
-import MaskAlarm from "./screen/MaskAlarm";
+import * as d3 from "d3";
+import BaseMap from "../comps/baseMap.vue";
 export default {
   components: {
-    ScreenHeader,
-    ScreenSceneTarget,
-    ScreenMap,
-    ScreenLegend,
-    ScreenPole,
-    ScreenVideo,
-    FormTarget,
-    ScreenTime,
-    ScreenCoin,
-
-    ScreenBasic,
-    ScreenScene,
-    ScreenWarn,
-
-    DataLine,
-    DataPolar,
-    MaskBox,
-    MaskAlarm
+    "base-map": BaseMap
   },
   data() {
     return {
-      baseUrl: "http://www.riaeasy.com:9071",
-
-      waterScene: {},
-      polarData: [],
-      sceneTargetData: [],
-      alarmData: [],
-      lineMaskStatus: false,
-      alarmMaskStatus: false,
-
-      infoData: [],
-      maskAlarmData:{}
+      mapXDomain: "0,200",
+      mapXRange: "0,200",
+      mapYDomain: "0,200",
+      mapYRange: "200,0",
+      defaultPath: "./china.json",
+      checkedPath: "./china.json",
+      pathList: [
+        { name: "中国", path: "./china.json" },
+        { name: "宁水", path: "./water.json" }
+      ]
     };
   },
   mounted() {
-    this.fetchScreen();
-    this.fetchWaterScene();
-    this.fetchAlarmList();
-    this.fetchPolar();
-    
+    this.checkedPath = this.defaultPath;
+    this.initPolygonMap();
   },
   methods: {
-    fetchScreen() {
-      // this.$axios({
-      //   url: this.baseUrl + "/act/current/dimaoValue",
-      //   method: "get",
-      //   headers: {
-      //     "Content-Type": "application/json;charset=UTF-8"
-      //   }
-      // }).then(res => {
-      //   console.log(res);
-      // });
+    refreshMap() {
+      this.$refs.baseMap.refreshMap();
     },
-    fetchWaterScene() {
-      // this.$axios({
-      //   url: this.baseUrl + "/act/current/shuitiValue",
-      //   method: "get",
-      //   headers: {
-      //     "Content-Type": "application/json;charset=UTF-8"
-      //   }
-      // }).then(res => {
-      //   console.log("waterScene ->", res);
-      //   this.waterScene = res.data.data[0] || {};
-      // });
-      this.waterScene = {name: "水体景观", value: 10, photos: []};
+    checkMapPath(path) {
+      console.log(path);
+      if (this.checkedPath !== path) {
+        this.checkedPath = path;
+        this.initPolygonMap();
+      }
     },
-    fetchAlarmList() {
-      // this.$axios({
-      //   url: this.baseUrl + "/act/yujing/yujingQuery",
-      //   method: "get"
-      // }).then(res => {
-      //   console.log("alarmArr", res.data.data);
-      // this.alarmData = res.data.data || [];
-      // });
-      this.alarmData = [
-        {
-          dt: "2020-10-16 04:39:22",
-          id: 4,
-          method: "持续观察",
-          name: "火花海",
-          result: "",
-          status: "处理中",
-          title: "浊度上升",
-          type: "告警"
-        },
-        {
-          dt: "2020-10-16 02:40:30",
-          id: 5,
-          method: "持续观察",
-          name: "犀牛海",
-          result: "",
-          status: "处理中",
-          title: "浊度上升",
-          type: "正常"
-        },
-        {
-          dt: "2020-10-16 02:40:30",
-          id: 5,
-          method: "持续观察",
-          name: "犀牛海",
-          result: "",
-          status: "处理中",
-          title: "浊度上升",
-          type: "紧急"
-        }
-      ];
-    },
-    fetchPolar() {
-      // this.$axios({
-      //   url: "/act/current/zhibiaoValue",
-      //   method: "get",
-      //   headers: {
-      //     "Content-Type": "application/json;charset=UTF-8"
-      //   }
-      // })
-      //   .then(res => {
-      //     let arr = res.data.data || [];
-      //     this.setPolar(arr);
-      //   })
-      //   .catch(() => {
-      let arr = [
-        { name: "美景指数", value: Math.round((Math.random() *10)) },
-        { name: "遗产健康指数", value: Math.round((Math.random() *10)) },
-        { name: "水体景观", value: Math.round((Math.random() *10)) },
-        { name: "钙华景观", value: Math.round((Math.random() *10)) },
-        { name: "生物生态景观", value: Math.round((Math.random() *10)) },
-        { name: "地貌", value: Math.round((Math.random() *10)) },
-        { name: "水文水质", value: Math.round((Math.random() *10))},
-        { name: "生物多样性", value: Math.round((Math.random() *10)) },
-        { name: "气候", value: Math.round((Math.random() *10)) }
-      ];
-      this.setPolar(arr);
-      // });
-    },
-    setPolar(arr) {
-      const filterArr = ["美景指数", "遗产健康指数"];
-      this.polarData = arr.filter(ele => {
-        return !filterArr.includes(ele.name);
-      });
+    initPolygonMap() {
+      let width = document.getElementById("map").offsetWidth,
+        height = document.getElementById("map").offsetHeight;
 
-      this.sceneTargetData = arr.filter(ele => {
-        return filterArr.includes(ele.name);
+      d3.select("#map")
+        .selectAll("*")
+        .remove();
+      let mapSvg = d3
+        .select("#map")
+        .append("svg")
+        .attr("width", width + "px")
+        .attr("height", height + "px")
+        .attr("style", "position: absolute;z-index: 10;");
+
+      let shadowMap = d3
+        .select("#map")
+        .append("svg")
+        .attr("width", width + "px")
+        .attr("height", height + "px")
+        .attr("style", "position: absolute;z-index: 9;");
+
+      let self = this;
+      d3.json(this.checkedPath).then(function(china) {
+        let mapArr = [];
+        china.features.forEach(ele => {
+          ele.geometry.coordinates.forEach(el => {
+            el.forEach(cell => {
+              mapArr.push(cell);
+            });
+          });
+        });
+
+        self.addMaskMap(mapSvg, mapArr);
+        self.addShadowMap(shadowMap, mapArr);
       });
     },
-    setMask() {
-      this.fetchInfo();
-      this.lineMaskStatus = true;
+    getScaleX() {
+      return d3
+        .scaleLinear()
+        .domain([-80, 20])
+        .range([0, 600]);
     },
-    fetchInfo(){
-      this.infoData = [
-        { title: "7.6", label: "气候", cell: [
-          { title:"降水", label: "5.8"},
-          { title:"温度", label: "5.8"},
-          { title:"SO2", label: "5.8"},
-          { title:"CO", label: "5.8"},
-        ]},
-        { title: "7.6", label: "地貌", cell: [
-          { title:"降水", label: "5.8"},
-          { title:"温度", label: "5.8"},
-          { title:"SO2", label: "5.8"},
-          { title:"CO", label: "5.8"},
-        ]},
-        { title: "7.6", label: "水文", cell: [
-          { title:"降水", label: "5.8"},
-          { title:"温度", label: "5.8"},
-          { title:"SO2", label: "5.8"},
-          { title:"CO", label: "5.8"},
-        ]},
-        { title: "7.6", label: "生物多样性", cell: [
-          { title:"降水", label: "5.8"},
-          { title:"温度", label: "5.8"},
-          { title:"SO2", label: "5.8"},
-          { title:"CO", label: "5.8"},
-        ]}
-      ]
+    getScaleY() {
+      return d3
+        .scaleLinear()
+        .domain([0, 60])
+        .range([500, 0]);
     },
-    showAlarmMask(v){
-      this.alarmMaskStatus = true;
+    addMaskMap(maskNode, polygonArr) {
+      let scaleX = this.getScaleX();
+      let scaleY = this.getScaleY();
+      let maskGroup = maskNode.append("g");
+      let mask = maskGroup
+        .append("defs")
+        .append("mask")
+        .attr("id", "mapMask");
+      mask
+        .selectAll("polygon")
+        .data(polygonArr)
+        .enter()
+        .append("polygon")
+        .attr("points", function(d) {
+          let strArr = [];
+          d.forEach(cell => {
+            strArr.push([scaleX(cell[0]), scaleY(cell[1])].join(","));
+          });
+          return strArr.join(" ");
+        })
+        .attr("fill", "white");
+
+      maskGroup
+        .append("image")
+        .attr(
+          "href",
+          "https://easyv.assets.dtstack.com/data/img/7478/35145/wkEdWxow7_1595483348064_oYfKXcfj2O.jpg"
+        )
+        .attr("height", "980")
+        .attr(
+          "style",
+          "mask: url('#mapMask'); width: 1273.81px; height: 844px;"
+        );
+
+      maskGroup
+        .append("g")
+        .selectAll("polygon")
+        .data(polygonArr)
+        .enter()
+        .append("polygon")
+        .attr("points", function(d) {
+          let strArr = [];
+          d.forEach(cell => {
+            strArr.push([scaleX(cell[0]), scaleY(cell[1])].join(","));
+          });
+          return strArr.join(" ");
+        })
+        .attr("fill", "rgba(11, 16, 27, 0.1)")
+        .attr("stroke-width", "1")
+        .attr("stroke", "rgb(14, 215, 255)")
+        .attr("stroke-dasharray", "none")
+        .attr("style", "cursor: pointer;");
     },
-    refreshTarget(v){
-      this.fetchPolar()
+    addShadowMap(shadowNode, polygonArr) {
+      let filterTemp = shadowNode
+        .append("defs")
+        .append("filter")
+        .attr("id", "shadowFilter")
+        .attr("x", "-2000%")
+        .attr("y", "-2000%")
+        .attr("width", "5000%")
+        .attr("height", "5000%");
+
+      filterTemp
+        .append("feOffet")
+        .attr("result", "offOut")
+        .attr("in", "SourceGraphic")
+        .attr("dx", 0)
+        .attr("dy", 0);
+      filterTemp
+        .append("feGaussianBlur")
+        .attr("result", "blurOut")
+        .attr("in", "offOut")
+        .attr("stdDeviation", 5);
+
+      let scaleX = this.getScaleX();
+      let scaleY = this.getScaleY();
+
+      shadowNode
+        .append("g")
+        .selectAll("polygon")
+        .data(polygonArr)
+        .enter()
+        .append("polygon")
+        .attr("points", function(d) {
+          let strArr = [];
+          d.forEach(cell => {
+            strArr.push([scaleX(cell[0]), scaleY(cell[1] - 1)].join(","));
+          });
+          return strArr.join(" ");
+        })
+        .attr("fill", "rgba(0,0,255,0)")
+        .attr("stroke", "rgba(32,218,255,0.4)")
+        .attr("stroke-width", "3");
+
+      let shadowGroup = shadowNode.append("g");
+      shadowGroup
+        .selectAll("polygon")
+        .data(polygonArr)
+        .enter()
+        .append("polygon")
+        .attr("points", function(d) {
+          let strArr = [];
+          d.forEach(cell => {
+            strArr.push([scaleX(cell[0]), scaleY(cell[1] - 1)].join(","));
+          });
+          return strArr.join(" ");
+        })
+        .attr("fill", "none")
+        .attr("stroke", "rgba(0,187,255,1)")
+        .attr("stroke-width", "3")
+        .attr("filter", "url('#shadowFilter')");
+      // .attr("fill", "rgba(0,0,255,0)")
+      // .attr("stroke","rgba(32,218,255,0.4)")
+      // .attr("stroke-width","3");
+    },
+
+    initPathMap() {
+      var width = document.getElementById("map").offsetWidth,
+        height = document.getElementById("map").offsetHeight;
+
+      var svg = d3
+        .select("#map")
+        .append("svg")
+        .attr("width", width + "px")
+        .attr("height", height + "px");
+
+      let filterTemp = svg
+        .append("defs")
+        .append("filter")
+        .attr("x", "-2000%")
+        .attr("y", "-2000%")
+        .attr("width", "5000%")
+        .attr("height", "5000%");
+
+      filterTemp
+        .append("feOffet")
+        .attr("result", "offOut")
+        .attr("in", "SourceGraphic")
+        .attr("dx", 0)
+        .attr("dy", 0);
+      filterTemp
+        .append("feGaussianBlur")
+        .attr("result", "blurOut")
+        .attr("in", "offOut")
+        .attr("stdDeviation", 5);
+
+      /*
+       * 创建一个地理投影
+       * .center 设置投影中心位置
+       * .scale 设置缩放系数
+       *
+       */
+      var projection = d3
+        .geoMercator()
+        .center([463, 36])
+        .scale(850)
+        .translate([width / 2, height / 2]);
+
+      //  创建路径生成器path
+      var path = d3.geoPath().projection(projection);
+
+      d3.json("./china.json").then(function(china) {
+        //  获取GeoJSON数据：这里我放在了js中方便加载
+        var features = china.features;
+
+        //  //实现图表的缩放
+        //     		var zoom = d3.behavior.zoom()
+        //     					.scaleExtent([1,5])
+        //     					.on("zoom",zoomed);
+
+        //     		function zoomed()
+        //     		{
+        //     			d3.select(this)
+        //     				.attr("transform","translate("+d3.event.translate+")scale("+d3.event.scale+")");
+        //     		}
+
+        //包含中国各省路径的分组元素
+        var chinaw = svg.append("g");
+        // .call(zoom) //调用图表缩放函数
+        //颜色
+        // var color = d3.schemeCategory10();
+
+        // //添加中国各省的路径元素
+        // var provinces =chinaw.selectAll("path")
+        // 					.data(china.features)
+        // 					.enter()
+        // 					.append("path")
+        // 					.attr("class","province")
+        //           .attr("fill", "none")
+        // 					//  .style("fill",function(d,i)
+        // 					// {
+        // 					// 	return color(i);
+        // 					// })
+        // 					.attr("stroke","#00ff00")
+        // 					.attr("stroke-width","1px")
+        // 					.attr("d",path)
+        //           .on("mouseover", function(d, i) {
+        // 	d3.select(this)
+        // 	  .attr("fill", "#00ffff");
+        // })
+        // .on("mouseout", function(d, i) {
+        // 	d3.select(this)
+        // 	  .attr("fill", "none");
+        // });
+
+        var chinax = svg.append("g");
+
+        chinax
+          .selectAll("polygon")
+          .data(china.features)
+          .enter()
+          .append("polygon")
+          .attr("class", "boxshadow")
+          .attr("fill", "rgba(0,0,255,0)")
+          //  .style("fill",function(d,i)
+          // {
+          // 	return color(i);
+          // })
+          .attr("stroke", "rgba(32,218,255,0.4)")
+          .attr("stroke-width", "3")
+          .attr("d", path);
+
+        // // 设置颜色值
+        // var ss2 = d3.schemeSet2;
+        // var sp2 = d3.schemePastel2;
+
+        /*
+         * 渲染地图
+         *
+         * mouseover 鼠标移入变色
+         *
+         */
+        // svg.append('g')
+        // 	.attr('class', 'map')
+        // 	.selectAll('.china')
+        // 	.data(features)
+        // 	.join('path')
+        // 	.attr('class', 'china')
+        // 	.attr("fill", function(d, i) {
+        // 		return ss2[i % 3]
+        // 	})
+        // 	.attr('d', path)
+        // .on("mouseover", function(d, i) {
+        // 	d3.select(this)
+        // 	  .attr("fill", sp2[i % 3]);
+        // })
+        // .on("mouseout", function(d, i) {
+        // 	d3.select(this)
+        // 	  .attr("fill", ss2[i % 3]);
+        // });
+      });
     }
   }
 };
@@ -266,70 +377,14 @@ export default {
   background: url("./screen/bg.png") no-repeat;
   background-size: cover;
   background-position: center 0;
-  &-top {
-    width: 100%;
-    position: relative;
-    &-time {
-      position: absolute;
-      left: 3vw;
-      bottom: 2vh;
-    }
-    &-coin {
-      position: absolute;
-      right: 3vw;
-      bottom: 2vh;
-    }
-  }
-  &-wrapper {
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    &-left {
-      width: 28%;
-      max-width: 515px;
-      height: 100%;
-    }
-    &-center {
-      flex: 1;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      &-node {
-        flex: 1;
-        position: relative;
-      }
-    }
-    &-right {
-      width: 28%;
-      max-width: 515px;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-  }
-  
-}
-.basic-wrapper {
-  width: 100%;
-  padding: 40px 20px 20px 20px;
-}
-.wrapper {
-  &-polar {
-    width: 100%;
-    height: 30%;
-    padding-left: 15px;
-    padding-right: 10px;
-  }
-  &-pole {
-    width: 100%;
-    height: 28%;
-    padding-top: 2%;
-  }
-  &-line {
-    height: 36%;
+  position: relative;
+  &-tools {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 300px;
+    color: #fff;
+    z-index: 20;
   }
 }
-
 </style>

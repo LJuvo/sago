@@ -1,6 +1,6 @@
 {
-  "name": "sago",
-  "version": "0.1.0",
+  "name": "screen",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -12,10 +12,11 @@
   "dependencies": {
     "@antv/data-set": "^0.11.7",
     "@antv/g2": "^4.0.15",
+    "@turf/turf": "^6.3.0",
     "ant-design-vue": "^1.6.5",
     "axios": "^0.20.0",
     "core-js": "^2.6.5",
-    "d3": "^6.2.0",
+    "d3": "^6.6.2",
     "dayjs": "^1.9.3",
     "less": "^3.12.2",
     "less-loader": "^7.0.2",
